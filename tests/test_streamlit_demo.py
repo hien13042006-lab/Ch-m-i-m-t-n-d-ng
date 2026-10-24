@@ -47,20 +47,6 @@ class DemoTests(unittest.TestCase):
             matrix = pd.read_csv(ROOT / f"eval_results/grade_transition_matrix_t{t}.csv", index_col=0)
             self.assertEqual(int(summary.n_customers.sum()), int(matrix.to_numpy().sum()))
 
-    def test_every_saved_policy_and_uncertainty(self):
-        app = self.app("Chính sách chấp thuận")
-        policies = pd.read_csv(ROOT / "eval_results/policy_evaluation.csv")
-        for t in [2, 3, 4]:
-            app.selectbox[0].set_value(t).run()
-            subset = policies.loc[policies.cohort == f"cohort_t{t}_N12"]
-            for _, row in subset.iterrows():
-                app.selectbox[1].set_value(row.policy_mode).run()
-                self.assertFalse(app.exception)
-                self.assertFalse(app.error)
-                self.assertEqual(app.metric[2].value, f"{row.rehab_approval_b:.2%}")
-                self.assertEqual(app.metric[3].value, f"{row.rehab_bad_rate_b:.2%}")
-                if row.delta_bad_rate_ci95_low <= 0 <= row.delta_bad_rate_ci95_high:
-                    self.assertTrue(any("chứa 0" in msg.value for msg in app.info))
 
 
 if __name__ == "__main__":

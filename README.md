@@ -20,12 +20,11 @@ python -m streamlit run streamlit_app.py
 Mở địa chỉ Streamlit hiển thị trong terminal (mặc định http://localhost:8501).
 Demo đọc các kết quả lịch sử đã lưu, không huấn luyện lại hoặc chấm hồ sơ mới.
 
-Ứng dụng có bốn màn hình:
+Ứng dụng có ba màn hình:
 
 - **Tổng quan:** ROC-AUC, Average Precision, khoảng tin cậy chênh lệch A/B và calibration.
 - **Hồ sơ khách hàng:** chọn khách có SHAP, so sánh xác suất/điểm/hạng và xem đóng góp nhóm.
 - **Điểm và hạng:** bảng 10 hạng, tỷ lệ xấu, PSI, chuyển hạng với t=2/3/4.
-- **Chính sách chấp thuận:** bốn kịch bản đã tính sẵn cho mỗi cấu hình t, kèm CI chênh lệch.
 
 Nếu thiếu dữ liệu, chạy các Part theo thứ tự:
 
@@ -40,12 +39,11 @@ python .\part4_dung_bootstrap_policy_and_checks.py
 File `frozen_cohort_labels_N12.csv` cần được chuẩn bị trước; bốn Part không tạo file này.
 Ứng dụng dùng điểm/nhãn từ CSV hiện tại thay vì sao chép điểm từ JSON minh họa cũ.
 Nếu SHAP không khớp điểm hiện tại, ứng dụng thông báo cần chạy lại Part 3.
-Nút **Đọc lại dữ liệu** xóa bộ nhớ đệm khi cập nhật các file kết quả.
+Ứng dụng đọc lại file đã cập nhật khi tải lại trang dựa trên thời gian sửa file.
 Ứng dụng không sửa hoặc ghi đè file đầu ra của bốn Part.
 
 Gợi ý trình bày: tổng quan → khách phục hồi tăng điểm → khách phục hồi xuống hạng
-→ ma trận chuyển hạng → chính sách Mode 2. Tỷ lệ xấu và tỷ lệ chấp thuận là chỉ số
-khác nhau; CI chứa 0 không chứng minh hai phương án tương đương.
+→ ma trận chuyển hạng. CI chứa 0 không chứng minh hai phương án tương đương.
 
 Kiểm tra chức năng các màn hình bằng [AppTest của Streamlit](https://docs.streamlit.io/develop/api-reference/app-testing/st.testing.v1.apptest):
 

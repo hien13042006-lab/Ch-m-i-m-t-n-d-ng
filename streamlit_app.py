@@ -31,7 +31,7 @@ COHORTS = {
     "no_bureau_balance": "Không có lịch sử bureau theo tháng",
     "excluded_missing_data": "Thiếu dữ liệu đối chiếu",
 }
-PAGES = ["Tổng quan", "Hồ sơ khách hàng", "Điểm và hạng", "Chính sách chấp thuận"]
+PAGES = ["Tổng quan", "Hồ sơ khách hàng", "Điểm và hạng"]
 
 
 @st.cache_data(show_spinner=False)
@@ -87,7 +87,6 @@ def overview():
                                   ("Average Precision (PR-AUC trong CSV)", "pr_auc", "delta_pr_auc")]
     ])
     st.dataframe(comparison, hide_index=True, width="stretch")
-    st.caption("Kết quả OOF từ cross-validation 5 fold. Khoảng tin cậy lấy từ file đã lưu; chưa phải kiểm chứng trên dữ liệu tương lai.")
     st.subheader("Dự đoán có sát thực tế?")
     cal = data("calibration_deciles_ab.csv")
     fig, ax = plt.subplots(figsize=(8, 4))
@@ -177,8 +176,7 @@ def customers():
         ax.axvline(0, color="#adb5bd", linewidth=1)
         ax.set_xlabel("Điểm đóng góp: dương tăng điểm, âm giảm điểm")
         figure(fig)
-        st.caption(f"Điểm nền {contribution.base_score:.2f} + tổng đóng góp {pts.sum():+.2f}, sau chặn biên = {reconstructed:.2f}. Sai số với điểm B: {abs(reconstructed - row.score_b):.6f} điểm.")
-        st.info("Đây là đóng góp vào điểm B, không phải phân rã chênh lệch B − A hay tác động nhân quả.")
+        st.caption(f"Điểm nền {contribution.base_score:.2f} + tổng đóng góp {pts.sum():+.2f}, sau chặn biên = {reconstructed:.2f}.")
     with st.expander("Đối chiếu nhãn thực tế (chỉ có trong dữ liệu lịch sử)"):
         st.write(f"TARGET = {int(row.TARGET)} — " + ("Có khó khăn thanh toán" if row.TARGET == 1 else "Không thuộc lớp khó khăn thanh toán"))
         st.caption("Nhãn thực tế được hiển thị để đối chiếu, không phải đầu vào để gán điểm cho riêng khách hàng.")
@@ -230,45 +228,6 @@ def grades():
         st.json(params)
 
 
-def policies():
-    st.title("Chính sách chấp thuận")
-    st.write("Đọc các kịch bản đã tính sẵn để so sánh cơ hội tiếp cận vốn và rủi ro của nhóm phục hồi.")
-    table = data(EVAL + "policy_evaluation.csv")
-    t = st.selectbox("Cấu hình nhóm phục hồi", [2, 3, 4], key="policy_t")
-    table = table.loc[table.cohort == f"cohort_t{t}_N12"]
-    def label(mode):
-        if mode.startswith("mode1"):
-            q = mode.split("_")[-1].replace("pct", "")
-            return f"Mode 1 · Cùng tỷ lệ chấp thuận {q}% toàn hệ thống"
-        return "Mode 2 · Ghép mức tỷ lệ xấu mục tiêu toàn hệ thống"
-    mode = st.selectbox("Kịch bản", table.policy_mode.tolist(), format_func=label)
-    row = table.loc[table.policy_mode == mode].iloc[0]
-    if mode.startswith("mode2"):
-        st.caption("Mức mục tiêu lấy từ A tại tỷ lệ chấp thuận 50% toàn hệ thống. Đây không phải cam kết tỷ lệ xấu bằng nhau trong riêng nhóm phục hồi.")
-    a, b = st.columns(2)
-    for col, tag in [(a, "a"), (b, "b")]:
-        with col.container(border=True):
-            st.subheader(f"Mô hình {tag.upper()}")
-            st.metric("Tỷ lệ chấp thuận · nhóm phục hồi", f"{row[f'rehab_approval_{tag}']:.2%}")
-            st.metric("Tỷ lệ xấu · trong nhóm được chấp thuận", f"{row[f'rehab_bad_rate_{tag}']:.2%}")
-            st.caption(f"Ngưỡng xác suất rủi ro: {row[f'system_cutoff_risk_{tag}']:.2%}")
-    for key, title, favorable in [("delta_approval", "Chênh lệch tỷ lệ chấp thuận", "positive"),
-                                  ("delta_bad_rate", "Chênh lệch tỷ lệ xấu trong nhóm được chấp thuận", "negative")]:
-        low, high = row[f"{key}_ci95_low"], row[f"{key}_ci95_high"]
-        st.write(f"**{title} B − A:** {row[key] * 100:+.2f} điểm phần trăm · CI 95% {confidence(low, high, 100)} điểm phần trăm.")
-        improved = low > 0 if favorable == "positive" else high < 0
-        if improved:
-            st.success("Có bằng chứng tăng chấp thuận." if favorable == "positive" else "Có bằng chứng giảm tỷ lệ xấu.")
-        elif low <= 0 <= high:
-            st.info("Khoảng tin cậy chứa 0: chưa đủ bằng chứng về chiều thay đổi; không có nghĩa hai phương án tương đương.")
-        else:
-            st.warning("Chênh lệch có bằng chứng theo chiều bất lợi trên chỉ số này.")
-    st.caption("Mô phỏng lịch sử: ngưỡng được chọn và đánh giá trên cùng dữ liệu OOF. Cần kiểm chứng độc lập trước khi áp dụng; tỷ lệ xấu không phải chi phí tổn thất bằng tiền.")
-    with st.expander("Xem và tải số liệu kịch bản"):
-        st.dataframe(table, hide_index=True, width="stretch")
-        download(table, f"policy_t{t}.csv")
-
-
 def main():
     st.set_page_config(page_title="Home Credit · Behavioral Scorecard", page_icon="◈", layout="wide")
     st.markdown("""<style>
@@ -282,16 +241,11 @@ def main():
         st.markdown("### ◈ HOME CREDIT")
         st.caption("BEHAVIORAL SCORECARD · NHÓM 12")
         page = st.radio("Khám phá", PAGES)
-        st.divider()
-        st.caption("Demo trên dữ liệu lịch sử và dự đoán OOF đã lưu.")
-        if st.button("Đọc lại dữ liệu"):
-            st.cache_data.clear()
-            st.rerun()
     try:
-        {PAGES[0]: overview, PAGES[1]: customers, PAGES[2]: grades, PAGES[3]: policies}[page]()
+        {PAGES[0]: overview, PAGES[1]: customers, PAGES[2]: grades}[page]()
     except (ValueError, KeyError, pd.errors.ParserError) as exc:
         st.error(f"Dữ liệu đầu ra chưa nhất quán: {exc}")
-        st.info("Chạy lại Part 1 → 2 → 3 → 4 với cùng bộ dữ liệu rồi chọn Đọc lại dữ liệu.")
+        st.info("Chạy lại Part 1 → 2 → 3 → 4 với cùng bộ dữ liệu rồi tải lại trang.")
 
 
 if __name__ == "__main__":
