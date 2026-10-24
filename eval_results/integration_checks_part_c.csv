@@ -1,0 +1,9 @@
+check_id,description,passed,detail
+C1,"Đủ 307 511 dòng, khớp SK_ID_CURR và cột fold",True,"n=307,511"
+C2,Số khách mỗi nhóm khớp bảng A2,True,"Khớp chính xác t2, t3, t4"
+C3,"Không có TARGET, SK_ID_CURR, cột nhóm trong danh sách đặc trưng",True,"A=171, B=219"
+C4,"pred_risk khớp sigmoid(logit), điểm khớp scoring_params, AUC độc lập khớp < 1e-6",True,max_err=1.47e-12
+C5,"Tổng điểm nhóm khớp điểm cuối, tỷ lệ bị cắt ở 1/1001 <= 0.1%",True,"clip_B=0.0605%, sum_err=0.0000"
+C6,"Tỷ lệ vỡ nợ tăng nghiêm ngặt theo hạng 1..10, PSI < 0.1",True,"monotonic=True, max_psi=0.00042"
+C7,Tỷ lệ độ lớn nhóm 'Các yếu tố khác' <= 20%,True,median_other_share=3.71%
+C8,Mọi số trong báo cáo truy xuất được về file trong eval_results/ hoặc file gốc,True,traced_tables=8

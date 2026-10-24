@@ -1,0 +1,67 @@
+{
+  "seeds_model_a": [
+    42,
+    123,
+    2024
+  ],
+  "seeds_model_b": [
+    42,
+    123,
+    2024
+  ],
+  "n_folds": 5,
+  "fold_random_state": 42,
+  "lgbm_params": {
+    "objective": "binary",
+    "metric": "auc",
+    "boosting_type": "gbdt",
+    "learning_rate": 0.05,
+    "num_leaves": 31,
+    "max_depth": 6,
+    "min_child_samples": 100,
+    "subsample": 0.8,
+    "subsample_freq": 1,
+    "colsample_bytree": 0.8,
+    "reg_alpha": 1.0,
+    "reg_lambda": 5.0,
+    "n_jobs": -1,
+    "verbose": -1
+  },
+  "probe_best_iterations_a": [
+    596,
+    409,
+    511,
+    483,
+    572
+  ],
+  "probe_best_iterations_b": [
+    595,
+    427,
+    549,
+    651,
+    534
+  ],
+  "probe_mean_rounds_a": 514,
+  "probe_mean_rounds_b": 551,
+  "fixed_num_boost_round": 532,
+  "feature_count_a": 171,
+  "feature_count_b": 219,
+  "feature_sha256_a": "da765b0f8fe46d588f2c15124ad4d105134794d323cea892bdea9a9f03158de4",
+  "feature_sha256_b": "09d7365c76cadbf63deb00c08687c8b9aeeded249532ba1774bfc5ea36fc32a7",
+  "seed_aucs_a": [
+    0.7744302326013031,
+    0.7746478825954438,
+    0.7744638065177082
+  ],
+  "seed_aucs_b": [
+    0.7871412545680427,
+    0.7872507857814177,
+    0.7879428525377535
+  ],
+  "seed_auc_std_a": 9.567463974137841e-05,
+  "seed_auc_std_b": 0.00035488852505995166,
+  "oof_auc_a": 0.775812854930781,
+  "oof_auc_b": 0.7888400517609812,
+  "oof_pr_auc_a": 0.26454692813369723,
+  "oof_pr_auc_b": 0.28280506558893304
+}

@@ -1,0 +1,9 @@
+report_section,metric_name,source_file,column_or_key
+1_overview_sample_size,total_train_customers,oof_predictions.csv,SK_ID_CURR
+1_cohort_counts,cohort_t2_t3_t4_counts,frozen_cohort_labels_N12.csv,cohort_t2_N12..cohort_t4_N12
+2_model_discrimination,delta_auc_and_pr_auc_ci95,eval_results/metrics_auc_bootstrap.csv,"delta_auc, delta_pr_auc"
+2_seed_fold_stability,fold_and_seed_auc,fold_seed_auc_report.csv,auc
+3_scorecard_grades,grade_1_to_10_bad_rates,eval_results/grade_table_10_b.csv,"bad_rate, bad_per_100"
+3_grade_transitions,rehab_grade_migration,eval_results/grade_transition_summary_t2.csv,"pct_rehab, observed_bad_rate"
+4_approval_policy,policy_mode1_and_mode2,eval_results/policy_evaluation.csv,"delta_approval, delta_bad_rate"
+4_calibration_and_cold_start,rehab_and_cold_calibration,eval_results/rehab_and_cold_calibration.csv,"calib_gap_a, calib_gap_b"

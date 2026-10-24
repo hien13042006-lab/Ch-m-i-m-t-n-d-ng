@@ -1,0 +1,4 @@
+direction,n_customers,pct_rehab,observed_bad_rate
+upgraded_better_grade,498,34.849545136459064,0.05421686746987952
+unchanged_grade,600,41.98740377886634,0.13
+downgraded_worse_grade,331,23.163051084674596,0.10876132930513595

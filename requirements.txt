@@ -1,0 +1,4 @@
+-r requirements-demo.txt
+lightgbm>=4,<5
+scikit-learn>=1.5,<2
+joblib>=1.4,<2

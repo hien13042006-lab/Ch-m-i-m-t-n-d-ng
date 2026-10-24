@@ -1,0 +1,24 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.streamlit/secrets.toml
+.env
+.env.*
+!.env.example
+.github-publish/
+
+# Raw Home Credit tables: download separately.
+application_train.csv
+application_test.csv
+bureau.csv
+bureau_balance.csv
+installments_payments.csv
+POS_CASH_balance.csv
+credit_card_balance.csv
+previous_application.csv
+
+# Training artifacts are recreated by Part 1; the demo uses saved OOF results.
+features_model_a.parquet
+features_model_b.parquet
+models/
